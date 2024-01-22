@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.com.cetus.learning.crudjpa.utils.ConstantsJWT;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,11 +47,12 @@ public class AuthController {
         return Jwts.builder()
                 .setIssuedAt(new Date())
                 .setSubject(auth.getName())
+                .signWith(Keys.hmacShaKeyFor(ConstantsJWT.CLAVE.getBytes()))
                 .claim("authorities", auth.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .collect(Collectors.toList()))
                 .setExpiration(new Date(System.currentTimeMillis() + ConstantsJWT.TIEMPO_VIDA))
-                .signWith(Keys.hmacShaKeyFor(ConstantsJWT.CLAVE.getBytes())).compact();
+                .compact();
 
     }
 

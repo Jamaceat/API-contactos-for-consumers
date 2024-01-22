@@ -43,9 +43,10 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         String token = request.getHeader(ConstantsJWT.ENCABEZADO);
         if (token != null) {
             Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(ConstantsJWT.CLAVE.getBytes())
+                    .setSigningKey(Keys.hmacShaKeyFor(ConstantsJWT.CLAVE.getBytes()))
                     .build()
-                    .parseClaimsJws(token.replace(ConstantsJWT.PREFIJO_TOKEN, "")).getBody();
+                    .parseClaimsJws(token.replace(ConstantsJWT.PREFIJO_TOKEN, ""))
+                    .getBody();
 
             String user = claims.getSubject();
             @SuppressWarnings("unchecked")
